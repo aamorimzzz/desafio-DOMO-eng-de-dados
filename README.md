@@ -58,21 +58,18 @@ O dbt resolve sozinho o grafo de dependências das transformações: as referên
 executa os modelos na ordem correta. A ingestão (Python) roda antes, alimentando o
 Bronze; em seguida `dbt build` materializa Silver e Gold e roda os testes.
 
-### Da prova de conceito à produção
+### de dev para produção
 
-A escolha de DuckDB e dbt prioriza portabilidade e baixo atrito para uma base de
-~1,6 mil linhas. Em produção, com volume real, a mesma arquitetura roda em PySpark
-sobre Delta Lake no Databricks:
+Usei DuckDB e dbt porque a base é pequena (~1,6 mil linhas) e assim o projeto roda em qualquer máquina, sem complicação. Num cenário real, com volume grande, a mesma arquitetura seria feita em PySpark ou mysql e Delta Lake no Databricks — a ideia das camadas e os testes continuam iguais, só muda a ferramenta:
 
-| Aqui (PoC) | Produção |
+| DEv (versão de teste local) | Em produção |
 |---|---|
-| Ingestão pandas → DuckDB | Job PySpark → Delta (zona Bronze) |
-| Modelos dbt (DuckDB) | dbt-spark ou PySpark → Delta (Silver/Gold) |
-| Tabela DuckDB | Tabela Delta (ACID, time travel, MERGE) |
-| Execução manual (ingest + dbt build) | Agendamento em orquestrador (Databricks Workflows / Azure Data Factory) |
+| Ingestão com pandas no DuckDB | Job em PySpark gravando em Delta (Bronze) |
+| Transformações em dbt no DuckDB | dbt ou PySpark gravando em Delta (Silver/Gold) |
+| Tabela DuckDB | Tabela Delta (com histórico e atualização incremental) |
+| Rodar na mão (ingest + dbt build) | Agendamento automático (Databricks Workflows ou Azure Data Factory) |
 
-A lógica de transformação e os testes migram sem reescrita conceitual.
-
+Ou seja, o que está aqui é a mesma lógica que rodaria em produção, só numa escala menor e mais simples de executar.
 ### Observação — escopo e ambiente híbrido
 
 O enunciado descreve um cenário de pipeline em **ambiente híbrido on-premises +
@@ -109,14 +106,17 @@ DBT_PROFILES_DIR=. dbt build
 Ao final, o banco `transform/finbank.duckdb` contém os schemas `bronze`,
 `main_silver` e `main_gold`.
 
-### API de consumo (opcional)
 
-A API expõe os dados curados da camada Gold via HTTP (transações e clientes):
+### API de consumo
+
+A API expõe os dados curados da camada Gold via HTTP (transações e clientes). Para subir localmente:
 
 ```bash
 uvicorn api.main:app --reload
 # documentação interativa em http://localhost:8000/docs
 ```
+
+Com a API no ar, a documentação interativa fica em `http://localhost:8000/docs`, onde dá pra testar os endpoints direto pelo navegador.
 
 ## Pipeline de Dados
 
