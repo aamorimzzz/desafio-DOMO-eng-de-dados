@@ -1,6 +1,6 @@
-# Desafio de Engenharia de Dados — Domo Inovação (Trilha Clássico)
+# Desafio de Engenharia de Dados — Domo Inovação
 
-> Dataset do desafio: **FinBank** (base fictícia de transações financeiras).
+> Dataset do desafio: **FinBank** (base fictícia de transações financeiras em xlsx).
 
 Pipeline de dados financeiro em arquitetura medallion (Bronze, Silver, Gold), com
 ingestão em Python, transformação e testes de qualidade em dbt sobre DuckDB, e uma
