@@ -27,7 +27,7 @@ consolidada.
 O pipeline segue o padrão medallion, com cada camada cumprindo um papel:
 
 ```
-  finbank_dirty.xlsx
+  desafio_dados_finbank_dirty.xlsx
         │
         ▼
    [ ingestão Python ]
@@ -84,7 +84,7 @@ on-premises ou cloud.
 
 Para este teste, o pipeline foi construído **considerando apenas a base de dados
 fornecida** (`finbank_dirty.xlsx`). A camada de extração on-premises e a movimentação
-para a cloud não foram implementadas, por estarem fora do material disponibilizado.
+para a cloud não foram implementadas, por estarem fora do material da base disponibilizado em xlsx.
 
 ## Como Executar
 
@@ -101,7 +101,7 @@ Dois passos rodam a ingestão, as transformações e os testes:
 # 1. Ingestão: xlsx -> Bronze
 python ingestion/ingest.py
 
-# 2. Transformações + testes: Bronze -> Silver -> Gold
+# 2. Transformações + testes: Bronze para Silver para Gold
 cd transform
 DBT_PROFILES_DIR=. dbt build
 ```
