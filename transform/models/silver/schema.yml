@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  # ---------------------------------------------------------
+  - name: stg_clientes
+    description: "Clientes limpos e padronizados (Silver)."
+    columns:
+      - name: id_cliente
+        description: "Chave primária do cliente."
+        tests:
+          - not_null
+          - unique
+      - name: segmento
+        description: "Segmento de negócio do cliente."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["pj", "varejo", "alta_renda"]
+      - name: score_credito
+        description: "Score de crédito (faixa esperada 0–1000)."
+        tests:
+          - not_null
+
+  # ---------------------------------------------------------
+  - name: stg_cartao
+    description: "Faturas de cartão por cliente (Silver)."
+    columns:
+      - name: id_cliente
+        description: "Cliente dono da fatura."
+        tests:
+          - not_null
+          - unique
+          # Integridade referencial: todo cartão pertence a um cliente válido
+          - relationships:
+              to: ref('stg_clientes')
+              field: id_cliente
+      - name: dias_atraso
+        description: "Dias de atraso da fatura (domínio conhecido)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 5, 10, 30, 60]
+
+  # ---------------------------------------------------------
+  - name: stg_transacoes
+    description: "Transações limpas: deduplicadas, sem nulos, sem sentinela (Silver)."
+    columns:
+      - name: id_transacao
+        description: "Chave da transação — única após deduplicação."
+        tests:
+          - not_null
+          - unique          # passa porque deduplicamos
+      - name: id_cliente
+        description: "Cliente da transação."
+        tests:
+          - not_null
+          # Integridade referencial com a dimensão de clientes
+          - relationships:
+              to: ref('stg_clientes')
+              field: id_cliente
+      - name: valor
+        description: "Valor da transação (confiável: não-nulo, não-sentinela)."
+        tests:
+          - not_null          # passa porque nulos foram p/ quarentena
+      - name: tipo
+        description: "Tipo da transação."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["credito", "debito"]
+
+  # ---------------------------------------------------------
+  - name: stg_transacoes_rejeitadas
+    description: "Quarentena de transações inválidas, com motivo da rejeição."
+    columns:
+      - name: motivo_rejeicao
+        description: "Razão pela qual a transação foi isolada."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["valor_nulo", "valor_sentinela_999999"]

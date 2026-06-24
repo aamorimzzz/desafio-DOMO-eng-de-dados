@@ -1,0 +1,22 @@
+name: "finbank"
+version: "1.0.0"
+config-version: 2
+
+# Perfil de conexão (definido em profiles.yml -> DuckDB)
+profile: "finbank"
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+# Estratégia de materialização por camada (medallion):
+# - silver e gold como TABLE (consultas rápidas, resultado materializado)
+# - bronze é carregado externamente pela ingestão (ingest.py) e referenciado
+#   como SOURCE, não como model.
+models:
+  finbank:
+    silver:
+      +materialized: table
+      +schema: silver
+    gold:
+      +materialized: table
+      +schema: gold

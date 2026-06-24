@@ -1,0 +1,9 @@
+# Núcleo do pipeline (ingestão + transformação + testes)
+pandas>=2.2
+openpyxl>=3.1
+duckdb>=1.0
+dbt-duckdb>=1.7
+
+# API que expõe os KPIs da Gold (opcional)
+fastapi>=0.110
+uvicorn>=0.29

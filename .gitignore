@@ -1,0 +1,23 @@
+# dbt
+transform/target/
+transform/dbt_packages/
+transform/logs/
+logs/
+
+# DuckDB (banco gerado pelo pipeline — reconstruído ao rodar)
+*.duckdb
+*.duckdb.wal
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# SO / editor
+.DS_Store
+.idea/
+.vscode/
+
+# dbt local user file
+transform/.user.yml

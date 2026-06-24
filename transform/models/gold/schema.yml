@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: fct_transacoes
+    description: "Tabela-fato de transações curadas, enriquecidas com o segmento do cliente (camada de consumo)."
+    columns:
+      - name: id_transacao
+        tests:
+          - not_null
+          - unique
+      - name: id_cliente
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_clientes')
+              field: id_cliente
+      - name: segmento
+        tests:
+          - accepted_values:
+              values: ["pj", "varejo", "alta_renda"]
+      - name: valor
+        tests:
+          - not_null
+      - name: tipo
+        tests:
+          - accepted_values:
+              values: ["credito", "debito"]
+
+  - name: dim_clientes
+    description: "Dimensão de clientes consolidada (cadastro + cartão), grão por cliente (camada de consumo)."
+    columns:
+      - name: id_cliente
+        tests:
+          - not_null
+          - unique
+      - name: segmento
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["pj", "varejo", "alta_renda"]

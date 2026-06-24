@@ -1,0 +1,16 @@
+version: 2
+
+# A camada BRONZE é carregada externamente pelo script de ingestão (ingest.py).
+# No dbt ela é referenciada como SOURCE — dados brutos de origem, não modelos.
+# Os modelos da Silver leem daqui via source('bronze', '<tabela>').
+sources:
+  - name: bronze
+    schema: bronze
+    description: "Camada raw — dados como vieram da origem (finbank_dirty.xlsx), sem tratamento."
+    tables:
+      - name: clientes
+        description: "Cadastro de clientes (id, segmento, score de crédito)."
+      - name: transacoes
+        description: "Transações financeiras (raw, contém duplicatas, nulos e sentinela 999999)."
+      - name: cartao
+        description: "Faturas de cartão por cliente (valor da fatura, dias de atraso)."

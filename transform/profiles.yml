@@ -1,0 +1,11 @@
+# Conexão do dbt com o DuckDB local.
+# O mesmo arquivo finbank.duckdb é escrito pela ingestão (Bronze) e lido/escrito
+# pelo dbt (Silver/Gold). Em produção, o "target" apontaria para o warehouse real
+# (ex: Databricks SQL Warehouse / Delta).
+finbank:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "finbank.duckdb"
+      threads: 4
