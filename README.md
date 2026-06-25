@@ -60,7 +60,7 @@ Bronze; em seguida `dbt build` materializa Silver e Gold e roda os testes.
 
 ### de dev para produção
 
-Usei DuckDB e dbt porque a base é pequena (~1,6 mil linhas) e assim o projeto roda em qualquer máquina, sem complicação. Num cenário real, com volume grande, a mesma arquitetura seria feita em PySpark ou mysql e Delta Lake no Databricks — a ideia das camadas e os testes continuam iguais, só muda a ferramenta:
+Usei DuckDB e dbt porque a base é pequena (~1,6 mil linhas) e assim o projeto roda em qualquer máquina, sem complicação. Num cenário real, com volume grande, a mesma arquitetura seria feita em PySpark e Delta Lake no Databricks — a ideia das camadas e os testes continuam iguais, só muda a ferramenta:
 
 | DEv (versão de teste local) | Em produção |
 |---|---|
